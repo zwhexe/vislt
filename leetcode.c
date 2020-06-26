@@ -8,6 +8,16 @@ struct TreeNode {
     struct TreeNode *right;
 };
 
+void preorderTree(Tree* T)
+{
+    while(T!=NULL){
+        printf("%d ", T->val);
+        preorderTree(T->left);
+        preorderTree(T->right);
+    }
+    printf("\n");
+}
+
 Tree* insertNode(Tree* t, int val)
 {
     if(t==NULL){
@@ -32,12 +42,12 @@ void copyNode(Tree* t, Tree* nt)
         if(t->left != NULL){
             nt->left = (Tree*)malloc(sizeof(Tree));
             nt->left->left = NULL; nt->left->right = NULL;
-            copy(t->left, nt->left);
+            copyNode(t->left, nt->left);
         }
         if(t->right != NULL){
             nt->right = (Tree*)malloc(sizeof(Tree));
             nt->right->left = NULL; nt->right->right = NULL;
-            copy(t->right, nt->right);
+            copyNode(t->right, nt->right);
         }
     }
 }
@@ -50,14 +60,18 @@ void copyTree(Tree** A, int* returnSize)
 
     A[*returnSize-1] = (Tree*)malloc(sizeof(Tree));
     A[*returnSize-1]->left = A[*returnSize-1]->right = NULL;
-    copy(A[*returnSize-2], A[*returnSize-1]);
+    copyNode(A[*returnSize-2], A[*returnSize-1]);
 }
 
 void subTrees(Tree** A, int m, int n, int *returnSize)
 {
     A[*returnSize-1] = insertNode(A[*returnSize-1], m);
     for(int i = m+1; i <= n; i++){
-        
+        copyTree(A, returnSize);
+        if(i-1>=m)
+            subTrees(A, m, i-1, returnSize);
+        if(i+1<=n)
+            subTrees(A, i+1, n, returnSize);
     }
 
 }
@@ -70,12 +84,13 @@ struct TreeNode** generateTrees(int n, int* returnSize)
         // loop every i as the top of tree
         (*returnSize)++;
         A = (Tree**)realloc(A, (*returnSize)*sizeof(Tree*));
-        A[*returnSize-1] = insertNode(A[*returnSize-1], i);
+        A[*returnSize-1]->val = i;
+        A[*returnSize-1]->left = A[*returnSize-1]->right = NULL;
 
         if(i-1>=1)
-            subTrees(A, 1, i-1, &returnSize);
+            subTrees(A, 1, i-1, returnSize);
         if(i+1<=n)
-            subTrees(A, i+1, n, &returnSize);
+            subTrees(A, i+1, n, returnSize);
     }
     
     return A;
@@ -87,6 +102,10 @@ int main()
     int n = 3;
     int s = 0;
     Tree** A = generateTrees(n, &s);
+
+    for(int i = 0; i < s; i++){
+        preorderTree(A[i]);
+    }
 
     return 0;
 }
