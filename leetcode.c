@@ -55,19 +55,11 @@ void copyTree(Tree** A, int* returnSize)
 
 void subTrees(Tree** A, int m, int n, int *returnSize)
 {
-    if(m == n){
-        A[*returnSize-1] = insertNode(A[*returnSize-1], m);
+    A[*returnSize-1] = insertNode(A[*returnSize-1], m);
+    for(int i = m+1; i <= n; i++){
+        
     }
-    else{
-        for(int i = m; i <= n; i++){
 
-            if(i-1 >= m)
-                subTrees(A, m, i-1, &returnSize);
-            if(i+1 <= n)
-                subTrees(A, i+1, n, &returnSize);
-        }
-    }
-    return T;
 }
 
 struct TreeNode** generateTrees(int n, int* returnSize)
