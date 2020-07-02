@@ -8,94 +8,66 @@ struct TreeNode {
     struct TreeNode *right;
 };
 
-void preorderTree(Tree* T)
+int recursiveGenerateTree(Tree*** pRet, int iStart, int iEnd)
 {
-    while(T!=NULL){
-        printf("%d ", T->val);
-        preorderTree(T->left);
-        preorderTree(T->right);
-    }
-    printf("\n");
-}
+    int iCur = 0;
+    int i = 0;
+    int j = 0;
+    int iRetNum = 0;
+    int iMaxNum = 2000;
+    int iLeftNum = 0;
+    int iRightNum = 0;
+    Tree** pRetLeft = NULL;
+    Tree** pRetRight = NULL;
+    Tree** pCurTree = NULL;
+    Tree* pCurTreeNode = NULL;
 
-Tree* insertNode(Tree* t, int val)
-{
-    if(t==NULL){
-        t = (Tree*)malloc(sizeof(Tree));
-        t->val = val;
-        t->left = NULL;
-        t->right = NULL;
-    }
-    else if(val < t->val){
-        t-> left = insertNode(t->left, val);
-    }
-    else if(val > t->val){
-        t->right = insertNode(t->right, val);
-    }
-    return t;
-}
-
-void copyNode(Tree* t, Tree* nt)
-{
-    if(t != NULL){
-        nt->val = t->val;
-        if(t->left != NULL){
-            nt->left = (Tree*)malloc(sizeof(Tree));
-            nt->left->left = NULL; nt->left->right = NULL;
-            copyNode(t->left, nt->left);
-        }
-        if(t->right != NULL){
-            nt->right = (Tree*)malloc(sizeof(Tree));
-            nt->right->left = NULL; nt->right->right = NULL;
-            copyNode(t->right, nt->right);
-        }
-    }
-}
-
-void copyTree(Tree** A, int* returnSize)
-{
-    // extend A size, and copy last tree in A
-    (*returnSize)++;
-    A = (Tree**)realloc(A, (*returnSize)*sizeof(Tree*));
-
-    A[*returnSize-1] = (Tree*)malloc(sizeof(Tree));
-    A[*returnSize-1]->left = A[*returnSize-1]->right = NULL;
-    copyNode(A[*returnSize-2], A[*returnSize-1]);
-}
-
-void subTrees(Tree** A, int m, int n, int *returnSize)
-{
-    A[*returnSize-1] = insertNode(A[*returnSize-1], m);
-    for(int i = m+1; i <= n; i++){
-        copyTree(A, returnSize);
-        if(i-1>=m)
-            subTrees(A, m, i-1, returnSize);
-        if(i+1<=n)
-            subTrees(A, i+1, n, returnSize);
-    }
-
-}
-
-struct TreeNode** generateTrees(int n, int* returnSize)
-{
-    Tree** A = NULL;
- 
-    for(int i = 1; i <= n; i++){
-        // loop every i as the top of tree
-        (*returnSize)++;
-        A = (Tree**)realloc(A, (*returnSize)*sizeof(Tree*));
-        A[*returnSize-1]->val = i;
-        A[*returnSize-1]->left = A[*returnSize-1]->right = NULL;
-
-        if(i-1>=1)
-            subTrees(A, 1, i-1, returnSize);
-        if(i+1<=n)
-            subTrees(A, i+1, n, returnSize);
+    if(iStart > iEnd){
+        *pRet = (Tree**)malloc(sizeof(Tree*) * 1);
+        (*pRet)[iRetNum] = NULL;
+        iRetNum += 1;
+        return iRetNum;
     }
     
-    return A;
+    for(iCur = iStart; iCur <= iEnd; iCur++){
+        iLeftNum = recursiveGenerateTree(&pRetLeft, iStart, iCur-1);
+        iRightNum = recursiveGenerateTree(&pRetRight, iCur+1, iEnd);
+        
+        pCurTree = realloc(pCurTree, sizeof(Tree**)*(iRetNum+(iLeftNum*iRightNum)));
+        for(i = 0; i < iLeftNum; i++){
+            for(j = 0; j < iRightNum; j++){
+                pCurTreeNode = (Tree*)malloc(sizeof(Tree) * 1);
+                pCurTreeNode->val = iCur;
+                pCurTreeNode->left = pRetLeft[i];
+                pCurTreeNode->right = pRetRight[j];
+                pCurTree[iRetNum] = pCurTreeNode;
+                iRetNum += 1;
+            }
+        }
+
+        free(pRetLeft);
+        free(pRetRight);
+    }
+
+    *pRet = pCurTree;
+    return iRetNum;
 }
 
+Tree** generateTrees(int n, int* returnSize)
+{
+    int iRetNum = 0;
+    Tree** pRet = NULL;
+
+    if(n=0){
+        *returnSize = iRetNum;
+        return pRet;
+    }
+
+    iRetNum = recursiveGenerateTree(&pRet, 1, n);
+
+    *returnSize = iRetNum;
+    return pRet;
+}
 
 int main()
 {
