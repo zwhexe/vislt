@@ -2,82 +2,68 @@
 #include <stdlib.h>
 
 typedef struct TreeNode Tree;
-struct TreeNode {
+struct TreeNode{
     int val;
-    struct TreeNode *left;
-    struct TreeNode *right;
+    struct TreeNode* left;
+    struct TreeNode* right;
 };
 
-int recursiveGenerateTree(Tree*** pRet, int iStart, int iEnd)
+int subTrees(int start, int end, int* narr)
 {
-    int iCur = 0;
-    int i = 0;
-    int j = 0;
-    int iRetNum = 0;
-    int iMaxNum = 2000;
-    int iLeftNum = 0;
-    int iRightNum = 0;
-    Tree** pRetLeft = NULL;
-    Tree** pRetRight = NULL;
-    Tree** pCurTree = NULL;
-    Tree* pCurTreeNode = NULL;
+    int nt = 0;
+    int nl = 0;
+    int nr = 0;
 
-    if(iStart > iEnd){
-        *pRet = (Tree**)malloc(sizeof(Tree*) * 1);
-        (*pRet)[iRetNum] = NULL;
-        iRetNum += 1;
-        return iRetNum;
-    }
+    if(start > end)
+        return 1;
     
-    for(iCur = iStart; iCur <= iEnd; iCur++){
-        iLeftNum = recursiveGenerateTree(&pRetLeft, iStart, iCur-1);
-        iRightNum = recursiveGenerateTree(&pRetRight, iCur+1, iEnd);
-        
-        pCurTree = realloc(pCurTree, sizeof(Tree**)*(iRetNum+(iLeftNum*iRightNum)));
-        for(i = 0; i < iLeftNum; i++){
-            for(j = 0; j < iRightNum; j++){
-                pCurTreeNode = (Tree*)malloc(sizeof(Tree) * 1);
-                pCurTreeNode->val = iCur;
-                pCurTreeNode->left = pRetLeft[i];
-                pCurTreeNode->right = pRetRight[j];
-                pCurTree[iRetNum] = pCurTreeNode;
-                iRetNum += 1;
-            }
+    for(int i = start; i <= end; i++){
+        if(narr[i-start] == 0){
+            nl = subTrees(start, i-1, narr);
+            narr[i-start] = nl;
         }
-
-        free(pRetLeft);
-        free(pRetRight);
+        else{
+            nl = narr[i-start];
+        }
+        
+        if(narr[end-i] == 0){
+            nr = subTrees(i+1, end, narr);
+            narr[end-i] = nl;
+        }
+        else{
+            nr = narr[end-i];
+        }
+        
+        nt += nl * nr;
     }
 
-    *pRet = pCurTree;
-    return iRetNum;
+    return nt;
 }
 
-Tree** generateTrees(int n, int* returnSize)
+int numTrees(int n)
 {
-    int iRetNum = 0;
-    Tree** pRet = NULL;
-
-    if(n=0){
-        *returnSize = iRetNum;
-        return pRet;
+    int nt = 0;
+    int nl = 0;
+    int nr = 0;
+    int* narr = (int*)calloc(n+1, sizeof(int));
+    narr[0] = 1;
+    narr[1] = 1;
+    for(int i = 1; i <= n; i++){
+        nl = subTrees(1, i-1, narr);
+        nr = subTrees(i+1, n, narr);
+        nt += nl * nr;
     }
 
-    iRetNum = recursiveGenerateTree(&pRet, 1, n);
-
-    *returnSize = iRetNum;
-    return pRet;
+    return nt;
 }
 
 int main()
 {
-    int n = 3;
-    int s = 0;
-    Tree** A = generateTrees(n, &s);
+    int n;
+    scanf("%d", &n);
 
-    for(int i = 0; i < s; i++){
-        preorderTree(A[i]);
-    }
-
+    int nt;
+    nt = numTrees(n);
+    printf("%d\n", nt);
     return 0;
 }
