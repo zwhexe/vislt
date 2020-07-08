@@ -1,5 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define MAX 10000
+#define bool int
+#define true 1
+#define false 0
 
 typedef struct TreeNode Tree;
 struct TreeNode{
@@ -8,66 +12,62 @@ struct TreeNode{
     struct TreeNode* right;
 };
 
-int subTrees(int start, int end, int* narr)
+Tree* createBT(int *A, int *ind, int N)
 {
-    int nt = 0;
-    int nl = 0;
-    int nr = 0;
+    if((*ind) >= N || A[*ind] <= 0)
+        return NULL;
+    Tree* t = (Tree*)malloc(sizeof(Tree));
+    t->val = A[*ind]; t->left = t->right = NULL;
 
-    if(start > end)
-        return 1;
-    
-    for(int i = start; i <= end; i++){
-        if(narr[i-start] == 0){
-            nl = subTrees(start, i-1, narr);
-            narr[i-start] = nl;
-        }
-        else{
-            nl = narr[i-start];
-        }
-        
-        if(narr[end-i] == 0){
-            nr = subTrees(i+1, end, narr);
-            narr[end-i] = nr;
-        }
-        else{
-            nr = narr[end-i];
-        }
-
-        nt += nl * nr;
-    }
-
-    narr[end-start+1] = nt;
-    return nt;
+    (*ind)++;
+    t->left = createBT(A, ind, N);
+    (*ind)++;
+    t->right = createBT(A, ind, N);
+    return t;
 }
 
-int numTrees(int n)
+int inOrder(Tree* t, int* ans)
 {
-    int nt = 0;
-    int nl = 0;
-    int nr = 0;
-    int* narr = (int*)calloc(n+1, sizeof(int));
-    narr[0] = 1;
-    narr[1] = 1;
+    int l = -MAX;
+    int r = MAX;
 
-    for(int i = 1; i <= n; i++){
-        nl = subTrees(1, i-1, narr);
-        nr = subTrees(i+1, n, narr);
-        nt += nl * nr;
-    }
-    narr[n] = nt;
+    if(t->left && *ans != 0)
+        l = inOrder(t->left, ans);
 
-    return nt;
+    if(t->val <= l)
+        *ans = 0;
+
+    if(t->right && *ans != 0)
+        r = inOrder(t->right, ans);
+    
+    if(t->val >= r)
+        *ans = 0;
+    
+    return t->val;
+}
+
+bool isValidBST(struct TreeNode* root)
+{
+    int ans = 1;
+    if(root == NULL)
+        return true;
+    int v = inOrder(root, &ans);
+    
+    if(ans == 0)
+        return false;
+    else
+        return true;
 }
 
 int main()
 {
-    int n;
-    scanf("%d", &n);
+    //int A[] = {5, 1, 0, 0, 4, 3, 0, 0, 6, 0, 0};
+    int A[] = {10,5,0,0,15,6,0,0,20,0,0};
+    int M = sizeof(A)/sizeof(A[0]);
+    int ind = 0;
+    Tree* T1 = createBT(A, &ind, M);
+    bool a1 = isValidBST(T1);
+    printf("%d\n", a1);
 
-    int nt;
-    nt = numTrees(n);
-    printf("%d\n", nt);
-
-    return 0;
+    return 0;   
 }
