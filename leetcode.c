@@ -6,12 +6,12 @@
 #define true 1
 #define false 0
 
-typedef struct TreeNode Tree;
 struct TreeNode{
     int val;
     struct TreeNode* left;
     struct TreeNode* right;
 };
+typedef struct TreeNode Tree;
 
 Tree* createBT(int *A, int *ind, int N)
 {
@@ -27,33 +27,30 @@ Tree* createBT(int *A, int *ind, int N)
     return t;
 }
 
-
-bool limit(Tree* t, int low, int high)
+void inorderTravel(Tree *T)
 {
-    if (t == NULL) 
-        return true;
-
-    int num = t->val;
-    if (num <= low || num >= high) 
-    return false;
-
-    return limit(t->left, low, num) && limit(t->right, num, high);
+    if(T){
+        inorderTravel(T->left);
+        printf("%d ", T->val);
+        inorderTravel(T->right);
+    }
+    return;
 }
 
-bool isValidBST(struct TreeNode* root)
+void recoverTree(struct TreeNode *root)
 {
-    return limit(root, MIN, MAX);
+    if(root){
+
+    }
 }
 
 int main()
 {
-    //int A[] = {5, 1, 0, 0, 4, 3, 0, 0, 6, 0, 0};
-    int A[] = {10,5,0,0,15,6,0,0,20,0,0};
-    int M = sizeof(A)/sizeof(A[0]);
+    int A[] = {3,1,0,0,4,2,0,0,0};
+    int N = sizeof(A)/sizeof(A[0]);
     int ind = 0;
-    Tree* T1 = createBT(A, &ind, M);
-    bool a1 = isValidBST(T1);
-    printf("%d\n", a1);
+    Tree* T = createBT(A, &ind, N);
+    inorderTravel(T);
 
     return 0;   
 }
