@@ -37,11 +37,34 @@ void inorderTravel(Tree *T)
     return;
 }
 
+void inorderRecord(Tree* t, Tree* p, Tree** max, Tree** min)
+{
+    if(t != NULL){
+        inorderRecord(t->left, t, max, min);
+        if(p && p->val > t->val){
+            if((*max)==NULL || (*min)==NULL){
+                *max = p;
+                *min = t;
+            }
+            else{
+                *min = t;
+            }
+        }
+        inorderRecord(t->right, t, max, min);
+    }
+}
+
 void recoverTree(struct TreeNode *root)
 {
-    if(root){
-
-    }
+    if(root==NULL)
+        return;
+    Tree* errMax = NULL;
+    Tree* errMin = NULL;
+    Tree* pre = NULL;
+    inorderRecord(root, pre, &errMax, &errMin);
+    int tmp = errMax->val;
+    errMax->val = errMin->val;
+    errMin->val = tmp;
 }
 
 int main()
@@ -50,6 +73,8 @@ int main()
     int N = sizeof(A)/sizeof(A[0]);
     int ind = 0;
     Tree* T = createBT(A, &ind, N);
+    inorderTravel(T); printf("\n");
+    recoverTree(T);
     inorderTravel(T);
 
     return 0;   
