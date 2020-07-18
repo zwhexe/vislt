@@ -76,6 +76,7 @@ int main()
     inorderTravel(T); printf("\n");
     recoverTree(T);
     inorderTravel(T);
+    recoverTree(T);
 
     return 0;   
 }
