@@ -37,24 +37,17 @@ void inorderTravel(Tree *T)
     return;
 }
 
-bool isSymmetric(struct TreeNode* root)
+int** levelOrder(struct TreeNode* root, int* returnSize, int** returnColumnSizes)
 {
 
 }
 
 int main()
 {
-    int A[] = {1,2,3,0,0,4,0,0,2,4,0,0,3,0,0};
-    int B[] = {1,2,0,3,0,0,2,0,3,0,0};
+    int A[] = {3,9,0,0,20,15,0,0,7,0,0};
     int N1 = sizeof(A)/sizeof(A[0]);
-    int N2 = sizeof(B)/sizeof(B[0]);
-    int ind1 = 0, ind2 = 0;
+    int ind1 = 0;
     Tree* T1 = createBT(A, &ind1, N1);
-    Tree* T2 = createBT(B, &ind2, N2);
-    bool S1 = isSymmetric(T1);
-    bool S2 = isSymmetric(T2);
-    printf("%d\n", S1);
-    printf("%d\n", S2);
 
     return 0;   
 }
