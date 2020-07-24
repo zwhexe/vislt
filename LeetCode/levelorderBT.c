@@ -51,7 +51,7 @@ int** levelOrder(struct TreeNode* root, int* returnSize, int** returnColumnSizes
     if(root == NULL)
         return NULL;
     queue[j++] = root;
-    levelcount += j - i;
+    levelcount = j - i;
 
     while(levelcount > 0){
         ret[*returnSize] = (int*)calloc(levelcount, sizeof(int));
