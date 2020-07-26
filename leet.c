@@ -1,98 +1,120 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define MAX 10000000
-#define MIN -10000000
-#define bool int
-#define true 1
-#define false 0
-#define MAX_Q 100
+#define MAX_SIZE 1000
 
-typedef struct TreeNode Tree;
-struct TreeNode{
+typedef struct ListNode List;
+struct ListNode{
     int val;
-    struct TreeNode* left;
-    struct TreeNode* right;
+    struct ListNode *next;
 };
 
-
-Tree* createBT(int *A, int *ind, int N)
+List* createList(int A[], int N)
 {
-    if((*ind) >= N || A[*ind] <= 0)
-        return NULL;
-    Tree* t = (Tree*)malloc(sizeof(Tree));
-    t->val = A[*ind]; t->left = t->right = NULL;
-
-    (*ind)++;
-    t->left = createBT(A, ind, N);
-    (*ind)++;
-    t->right = createBT(A, ind, N);
-    return t;
+    List* head = (List*)malloc(sizeof(List));
+    head->val = A[0]; head->next = NULL;
+    List* tmp = head;
+    for(int i = 1; i < N; i++)
+    {
+        List* node = (List*)malloc(sizeof(List));
+        node->val = A[i];
+        node->next = NULL;
+        tmp->next = node;
+        tmp = node;
+    }
+    return head;
 }
 
-void inorderTravel(Tree *T)
-{
-    if(T){
-        inorderTravel(T->left);
-        printf("%d ", T->val);
-        inorderTravel(T->right);
+void insertHeap(List** heap, List* list, int* size)
+{   
+    int i;
+    List* tmp = list;
+    while(tmp != NULL){
+        for(i = ++(*size);  tmp->val < heap[i/2]->val; i/=2)
+            heap[i] = heap[i/2];
+        heap[i] = tmp;
+        tmp = tmp->next;
     }
-    return;
 }
 
-int** zigzagLevelOrder(struct TreeNode* root, int* returnSize, int** returnColumnSizes)
+List* deleteHeap(List** heap, int* size)
 {
-    // initialize input and output
-    int** ret = (int**)calloc(MAX_Q, sizeof(int*));
-    *returnColumnSizes = (int*)calloc(MAX_Q, sizeof(int));
-    *returnSize = 0;
-
-    Tree** queue = (Tree**)malloc(MAX_Q*10*sizeof(Tree*));
-    int levelcount = 0;
-    int i = 0, j = 0, k = 0;
-    if(root == NULL)
+    if(*size < 1)
         return NULL;
-    queue[j++] = root;
-    levelcount = j - i;
-    // *returnSize is level number
-    while(levelcount > 0){
-        ret[*returnSize] = (int*)calloc(levelcount, sizeof(int));
-        (*returnColumnSizes)[*returnSize] = levelcount;
-        if((*returnSize)%2 == 0){
-            for(k = 0; k < levelcount; k++){
-                if(queue[i]->left)
-                    queue[j++] = queue[i]->left;
-                if(queue[i]->right)
-                    queue[j++] = queue[i]->right;
-                ret[*returnSize][k] = queue[i++]->val;
-            }
-        }
-        else{
-            for(k = levelcount-1; k >= 0; k--){
-                if(queue[i]->left)
-                    queue[j++] = queue[i]->left;
-                if(queue[i]->right)
-                    queue[j++] = queue[i]->right;
-                ret[*returnSize][k] = queue[i++]->val;
-            }
-        }
-        (*returnSize)++;
-        levelcount = j - i;
+    List* min = heap[1];
+    List* last = heap[(*size)--];
+    
+    int i, child;
+    for(i = 1; i*2 <= *size; i = child){
+        child = i*2;
+        if(child+1 <= *size && heap[child+1]->val < heap[child]->val)
+            child++;
+        if(last->val > heap[child]->val)
+            heap[i] = heap[child];
+        else
+            break;
     }
-    return ret;
+    heap[i] = last;
+    return min;
+}
+
+struct ListNode* mergeKLists(struct ListNode** lists, int listsSize)
+{  
+    if(listsSize < 1 || lists == NULL) 
+        return NULL;
+    else if(listsSize == 1)
+        return *lists;
+    else
+        for(int i = 0; i < listsSize;){
+            if(!lists[i])
+                lists[i] = lists[--listsSize];
+            else
+                i++;
+        }
+
+    List** heap = (List**)malloc(MAX_SIZE * sizeof(List*));
+    heap[0] = (List*)malloc(sizeof(List));
+    List* tmp = lists[0];
+    heap[0]->val = -1000; // as sentinel
+    int size = 0;
+    while(tmp != NULL){
+        heap[++size] = tmp;
+        tmp = tmp->next;
+    }
+
+    for(int i = 1; i < listsSize; i++)
+        insertHeap(heap, lists[i], &size);
+
+    List* head = (List*)malloc(sizeof(List));
+    head->next = NULL; //set NULL temporarily
+    tmp = head;
+    for(int i = size; i > 0; i--){
+        tmp->next = deleteHeap(heap, &size);
+        tmp = tmp->next;
+        tmp->next = NULL;
+    }
+
+    return head->next;
 }
 
 int main()
 {
-    int A[] = {3,9,10,0,0,0,20,15,0,0,7,0,0};
-    int N1 = sizeof(A)/sizeof(A[0]);
-    int ind1 = 0;
-    Tree* T1 = createBT(A, &ind1, N1);
-
-    int s = 0;
-    int* size = &s;
-    int* c = NULL;
-    int** colsize = &c;
-    int** ret = levelOrder(T1, size, colsize);
+    int N = 3;
+    List** L = (List**)malloc(N*sizeof(List*));
+    int A1[] = {1,4,5};
+    int A2[] = {1,3,4};
+    int A3[] = {2,6};
+    List* l1 = createList(A1, sizeof(A1)/sizeof(*A1));
+    List* l2 = createList(A2, sizeof(A2)/sizeof(*A2));
+    List* l3 = createList(A3, sizeof(A3)/sizeof(*A3));
+    *L = l1; *(L+1) = l2, *(L+2) = l3;
+    
+    List* ret = mergeKLists(L, N);
+    List* tmp = ret;
+    while(tmp){
+        printf("%d ", tmp->val);
+        tmp = tmp->next;
+    }
+    printf("\n");
 
     return 0;
 }
