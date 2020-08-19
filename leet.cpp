@@ -1,65 +1,44 @@
 #include <iostream>
-#include <algorithm>
 #include <string>
 #include <vector>
-#include <stack>
-#include <queue>
+#include <algorithm>
 using namespace std;
-
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-};
 
 class Solution {
 public:
-    vector<vector<int>> threeSum(vector<int>& nums) {
-        if(nums.empty())
-            return {};
-        vector<vector<int>> ret;
-        sort(nums.begin(), nums.end());
-        for(int i = 0; i < nums.size(); i++){
-            twoSum(ret, nums, i);
-            while(i < nums.size()-1 && nums[i] == nums[i+1])
-                i++;
-        }
-        return ret;
-    }
+    int coinChange(vector<int>& coins, int amount) {
+        if(amount == 0)
+            return 0;
+        if(amount < 0)
+            return -1;
 
-    void twoSum(vector<vector<int>>& ret, vector<int>& nums, int i) {
-        int target = 0 - nums[i];
-        int j = i+1, k = nums.size() - 1;
-        while(j < k){
-            if(nums[j] + nums[k] == target){
-                vector<int> v{nums[i], nums[j++], nums[k--]};
-                ret.push_back(v);
-                while(nums[j] == nums[j-1] && j < k)
-                    j++;
-                while(nums[k] == nums[k+1] && j < k)
-                    k--;
-            }
-            else if(nums[j] + nums[k] < target)
-                j++;
-            else if(nums[j] + nums[k] > target)
-                k--;
+        static int* ret = new int[amount+1]();
+        if(ret[amount] != 0)
+            return ret[amount];
+
+        ret[amount] = amount + 10;
+        for(int i = 0; i < coins.size(); i++){
+            int t = 1 + coinChange(coins, amount-coins[i]);
+            if(t == -1)
+                continue;
+            else
+                ret[amount] = min(ret[amount], t);
         }
+
+        if(ret[amount] != amount+10)
+            return ret[amount];
+        else
+            return -1;
     }
 };
 
 int main()
-{   
-    vector<int> nums{-1, 0, 1, 2, -1, -4};
+{
+    vector<int> coins {1,2,5};
+    int amount = 11;
     Solution sol;
-    vector<vector<int>> ans = sol.threeSum(nums);
-    for(auto a = ans.begin(); a != ans.end(); a++){
-        vector<int> vec = *a;
-        for(auto v = vec.begin(); v != vec.end(); v++)
-            cout << *v << " ";
-        cout << endl;
-    }
+    int num = sol.coinChange(coins, amount);
+    cout << num << endl;
 
-    system("pause");
     return 0;
 }
