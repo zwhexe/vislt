@@ -1,88 +1,42 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <queue>
-#include <unordered_set>
+#include <unordered_map>
 using namespace std;
 
 class Solution {
 public:
-
-    string plusone(string str,int i)
-    {
-        if(str[i]=='9')
-        {
-            str[i]='0';
-        }
-        else{
-            str[i]=str[i]+1;
-        } 
-        return str;
-    }
-    string downone(string str,int i)
-    {
-        if(str[i]=='0')
-        {
-            str[i]='9';
-        }
-        else{
-            str[i]=str[i]-1;
-        }
-        return  str;
-    }
-
-
-    int openLock(vector<string>& deadends, string target) {
-       unordered_set<string> deadset(deadends.begin(), deadends.end());
-       queue<string>q;
-       q.push("0000");
-       unordered_set<string>visited;
-       visited.insert("0000");
-       int step=0;
-       while(!q.empty())
-       {
-           int size=q.size();
-           for(int i=0;i<size;i++)
-           {
-               string str=q.front();
-               q.pop();
-               if(deadset.find(str)!=deadset.end())
-               {
-                   continue;
-               }
-               if(str == target){
-                    return step;
+    int lengthOfLongestSubstring(string s){
+        if(s.size() == 0)
+            return 0;
+        unordered_map<char, int> arr;
+        int left = 0, right = 0, ml = 1;
+        arr[s[0]] = 1;
+        while(right < s.size()){
+            right++;
+            char sr = s[right];
+            if(arr[sr] == 0){
+                arr[sr] = 1;
+                ml = (right-left+1) > ml ? (right-left+1) : ml;
+                continue;
+            }
+            else{
+                while(arr[s[right]] != 0 && left < right){
+                    char sl = s[left++];
+                    int a = arr.erase(sl);
                 }
-               for(int i=0;i<4;i++)
-               {
-                   string up=plusone(str,i);
-                   if(!visited.count(up))
-                   {
-                       q.push(up);
-                       visited.insert(up);
-                   }
-                   string down=downone(str,i);
-                   if(!visited.count(down))
-                   {
-                       q.push(down);
-                       visited.insert(down);
-                   }
-               }
-           }
-           step++;
-       }
-        return -1;
+            }
+        }
+        return ml;
     }
 };
 
 int main()
 {
-    vector<string> deadends{"0201","0101","0102","1212","2002"};
-    string target = "0202";
+    string s("pwwkew");
     Solution sol;
-    int ans = sol.openLock(deadends, target);
-    cout << ans << endl;
+    int n = sol.lengthOfLongestSubstring(s);
+    cout << n << endl;
 
-    system("pause");
     return 0;
 }
