@@ -6,37 +6,26 @@ using namespace std;
 
 class Solution {
 public:
-    int lengthOfLongestSubstring(string s){
-        if(s.size() == 0)
-            return 0;
-        unordered_map<char, int> arr;
-        int left = 0, right = 0, ml = 1;
-        arr[s[0]] = 1;
+    string minWindow(string s, string t) {
+        unordered_map<char, int> need, window;
+        for(int i = 0; i < t.size(); i++)
+            need[t[i]] = 1;
+        int left = 0, right = 0;
         while(right < s.size()){
-            right++;
-            char sr = s[right];
-            if(arr[sr] == 0){
-                arr[sr] = 1;
-                ml = (right-left+1) > ml ? (right-left+1) : ml;
-                continue;
-            }
-            else{
-                while(arr[s[right]] != 0 && left < right){
-                    char sl = s[left++];
-                    int a = arr.erase(sl);
-                }
-            }
+            char c = s[right];
+
         }
-        return ml;
     }
 };
 
 int main()
 {
-    string s("pwwkew");
+    string s("ADOBECODEBANC");
+    string t("ABC");
     Solution sol;
-    int n = sol.lengthOfLongestSubstring(s);
-    cout << n << endl;
-
+    string ans = sol.minWindow(s, t);
+    cout << ans << endl;
+    // ans is BANC
+    system("pause");
     return 0;
 }
