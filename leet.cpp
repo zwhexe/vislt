@@ -9,37 +9,26 @@ using namespace std;
 class Solution {
 public:
     string minWindow(string s, string t) {
-        if(s.size() < t.size())
-            return "";
-        int lo = 0, hi = s.size();
-        unordered_map<char,int> window;
-        int left = 0, right = 0;
-        while(right < s.size()){
-            window.insert(pair<char,int>{s[right], 1});
-            if(!validStr(window, t)){
-                right++;
-            }
-            else{
-                while(validStr(window, t) && left <= right){
-                    if(right-left < hi - lo){
-                        lo = left;
-                        hi = right;
-                    }
-                    left++;
+        unordered_map<char, int> count;
+        for (auto c : t) count[c] ++;
+        int len = 0, n = s.size();
+        int minlen = n;
+        string ans = "";
+        int l = 0, r = 0;
+        for ( ; r < n; r ++) {
+            count[s[r]] --;
+            if (count[s[r]] >= 0) len ++;
+            while (len == t.size()) {
+                if (r - l + 1 <= minlen) {
+                    minlen = r - l + 1;
+                    ans = s.substr(l, r - l + 1);
                 }
+                count[s[l]] ++;
+                if (count[s[l]] > 0) len --;
+                l ++;
             }
         }
-        if(hi - lo >= s.size())
-            return "";
-        return s.substr(lo, hi-lo+1);
-    }
-
-    bool validStr(unordered_map<char,int>& window, string& t){
-        for(int i = 0; i < t.size(); i++)
-            if(window[t[i]] == 0)
-                return false;
-        cout << "existed!" << endl;
-        return true;
+        return ans;
     }
 };
 
