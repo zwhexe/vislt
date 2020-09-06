@@ -7,25 +7,32 @@ using namespace std;
 
 class Solution {
 public:
-    int rob(vector<int>& nums) {
-        if(nums.empty())
+    int maxProfit(vector<int>& prices){
+        if(prices.empty())
             return 0;
-        int N = nums.size();
-        vector<int> dp(N+1, 0);
-        dp[0] = 0;
-        dp[1] = nums[0];
-        for(int k = 2; k <= N; k++)
-            dp[k] = max(dp[k-1], nums[k-1]+dp[k-2]);
+        int N = prices.size();
+        int ***dp = new int**[N];
+        for(int i = 0; i < N; i++){
+            dp[i] = new int* [2];
+            dp[i][0] = new int[2];
+            dp[i][1] = new int[2];
+        }
 
-        return dp[N];
+        dp[0][0][0] = 0;
+        dp[0][0][1] = -prices[0];
+        for(int i = 1; i < N; i++){
+
+        }
+
+        return 0;
     }
 };
 
 int main()
 {
-    vector<int> nums {2,7,9,3,1};
+    vector<int> prices {3,3,5,0,0,3,1,4};
     Solution sol;
-    int ans = sol.rob(nums);
+    int ans = sol.maxProfit(prices);
     cout << ans << endl;
 
     return 0;
