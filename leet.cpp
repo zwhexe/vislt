@@ -1,38 +1,56 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <queue>
 #include <algorithm>
 
 using namespace std;
 
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x): val(x), left(NULL), right(NULL) {}
+};
+
 class Solution {
 public:
-    int maxProfit(vector<int>& prices){
-        if(prices.empty())
+    int rob(TreeNode* root) {
+        if(root == nullptr)
             return 0;
-        int N = prices.size();
-        int ***dp = new int**[N];
-        for(int i = 0; i < N; i++){
-            dp[i] = new int* [2];
-            dp[i][0] = new int[2];
-            dp[i][1] = new int[2];
-        }
+        
 
-        dp[0][0][0] = 0;
-        dp[0][0][1] = -prices[0];
-        for(int i = 1; i < N; i++){
-
-        }
-
-        return 0;
+        
+        return root->left->val;
     }
 };
 
+vector<TreeNode> initTree(int A[], int N) {
+    vector<TreeNode> v;
+    for(int i = 0; i < N; i++){
+        TreeNode* t = new TreeNode (A[i]);
+        v.push_back(*t);
+    }
+    for(int i = 0; i < N; i++){
+        if(i*2+1<N && v[i*2+1].val!=0)
+            v[i].left = &v[i*2+1];
+        else
+            v[i].left = NULL;
+        if(i*2+2<N && v[i*2+2].val!=0)
+            v[i].right = &v[i*2+2];
+        else
+            v[i].right = NULL;
+    }
+    return v;
+}
+
 int main()
 {
-    vector<int> prices {3,3,5,0,0,3,1,4};
+    int A[] = {3,2,3,0,3,0,1};
+    int N = sizeof(A)/sizeof(A[0]);
+    vector<TreeNode> t = initTree(A, N);
     Solution sol;
-    int ans = sol.maxProfit(prices);
+    int ans = sol.rob(&t[0]);
     cout << ans << endl;
 
     return 0;
