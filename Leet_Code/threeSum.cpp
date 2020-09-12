@@ -49,7 +49,7 @@ public:
 };
 
 int main()
-{   
+{
     vector<int> nums{-1, 0, 1, 2, -1, -4};
     Solution sol;
     vector<vector<int>> ans = sol.threeSum(nums);
@@ -60,6 +60,5 @@ int main()
         cout << endl;
     }
 
-    system("pause");
     return 0;
 }
