@@ -8,56 +8,20 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> letterCombinations(string digits) {
-        if(digits.empty())
-            return {};
-        vector<string> pn;
-        pn.push_back("");
-        pn.push_back("");
-        pn.push_back("abc");
-        pn.push_back("def");
-        pn.push_back("ghi");
-        pn.push_back("jkl");
-        pn.push_back("mno");
-        pn.push_back("pqrs");
-        pn.push_back("tuv");
-        pn.push_back("wxyz");
-        vector<string> tb;
-        for(int i = 0; i < digits.size(); i++){
-            char c = digits[i];
-            int j = c - '0';
-            tb.push_back(pn[j]);
-        }
-        vector<string> ret;
-        string str = "";
-        foo(ret, tb, 0, str);
-        return ret;
-    }
+    vector<vector<int> > fourSum(vector<int>& nums, int target) {
 
-    void foo(vector<string>& ret, vector<string> tb, int ind, string str) {
-        if(ind == tb.size()){
-            ret.push_back(str);
-            return;
-        }
-        for(int i = ind; i < tb.size(); i++){
-            string ts = tb[i];
-            for(int j = 0; j < ts.length(); j++){
-                char c = ts[j];
-                str += c;
-                foo(ret, tb, ind++, str);
-                str.pop_back();
-            }
-        }
     }
 };
 
 int main()
 {
-    string digits = "23";
+    vector<int> nums {1,0,-1,0,-2,2};
+    int target = 0;
     Solution sol;
-    vector<string> strs = sol.letterCombinations(digits);
-    for(auto a = strs.begin(); a != strs.end(); a++)
-        cout << *a << endl;
-
-    return 0;
+    vector<vector<int> > ans = sol.fourSum(nums, target);
+    for(auto a: ans){
+        for(auto b: a)
+            cout << b << " ";
+        cout << endl;
+    }
 }
