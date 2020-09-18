@@ -7,36 +7,33 @@
 
 using namespace std;
 
+struct ListNode {
+    int val;
+    ListNode* next;
+    ListNode(int x): val(x), next(NULL) {}
+};
+
 class Solution {
 public:
-    vector<string> generateParenthesis(int n) {
-        vector<string> res;
-        foo(res, "", 0, 0, n);
-        return res;
-    }
-
-    void foo(vector<string>& res, string str, int l, int r, int N) {
-        if(l > N || r > N || l < r) 
-            return;
-        if(l==N && r==N) {
-            res.push_back(str);
-            return;
-        }
-
-        foo(res, str+'(', l+1, r, N);
-        foo(res, str+')', l, r+1, N);
-
-        return;
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        
     }
 };
 
 int main()
 {
-    int n = 3;
+    ListNode t1(1);
+    ListNode t2(2); t1.next = &t2;
+    ListNode t3(3); t2.next = &t3;
+    ListNode t4(4); t3.next = &t4;
+    ListNode t5(5); t4.next = &t5;
     Solution sol;
-    vector<string> ret = sol.generateParenthesis(n);
-    for(auto a: ret)
-        cout << a << endl;
+    ListNode* t = sol.reverseKGroup(&t1, 3);
+
+    while(t!=NULL){
+        cout << t->val << endl;
+        t = t->next;
+    }
 
     return 0;
 }
