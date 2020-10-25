@@ -5,52 +5,34 @@
 
 using namespace std;
 
-class Solution{
+class Solution {
 public:
-	vector<int> findSubstring(string s, vector<string>& words) {
-        if(s=="" || words.size()==0) return {};
-        unordered_map<string, int> hash;
-        vector<int> res;
-        res.clear();
-        // record size of word, words and s
-        int num = words.size();
-        int step = words[0].length();
-        int len = s.length();
-        // complete hash with word in words
-        for(auto w: words)
-            hash[w]++;
-        auto tmp = hash;
-        string buff = "";
-        // loop s to match words
-        for(int i = 0; i < len; i++){
-            if(len - i + 1 < step * num) 
-                break;  // the rest s is not enough match words, so break
-            tmp = hash; // this tmp will decrease to record found word in s
-            buff = s.substr(i, step);   // pos i's word with step length
-            int j = i, count = 0;
-            while(tmp[buff] > 0) {
-                --tmp[buff];
-                count++;
-                j += step;
-                buff = s.substr(j, step);
-            }
-            if(count == num) {
-                // the pos i's words match words list
-                res.push_back(i);
-            }
+    int searchInsert(vector<int>& nums, int target) {
+        int N=nums.size();
+        int left = 0;
+        int right = N-1;
+        int mid=0;
+        while(left<=right)
+        {
+            mid = (left + right) / 2;           
+            if (nums[mid] >= target)
+                right = mid - 1;
+            else    
+                left = mid + 1;
         }
-        return res;
+        return left;
+
     }
 };
 
+
 int main()
 {
-	string s("barfoothefoobarman");
-	vector<string> words {"foo", "bar"};
-	Solution sol;
-	vector<int> res = sol.findSubstring(s, words);
-	for(auto a: res)
-		cout << a << endl;
+    vector<int> nums {1,3,5,6};
+    int target = 2;
+    Solution sol;
+    int res = sol.searchInsert(nums, target);
+    cout << res << endl;
 
-	return 0;
+    return 0;
 }
