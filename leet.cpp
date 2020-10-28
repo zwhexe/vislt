@@ -7,32 +7,31 @@ using namespace std;
 
 class Solution {
 public:
-    int searchInsert(vector<int>& nums, int target) {
-        int N=nums.size();
-        int left = 0;
-        int right = N-1;
-        int mid=0;
-        while(left<=right)
-        {
-            mid = (left + right) / 2;           
-            if (nums[mid] >= target)
-                right = mid - 1;
-            else    
-                left = mid + 1;
-        }
-        return left;
+    void solveSudoku(vector<vector<char>>& board) {
+        
 
     }
 };
 
-
 int main()
 {
-    vector<int> nums {1,3,5,6};
-    int target = 2;
+    vector<vector<char>> board {{'5','3','.','.','7','.','.','.','.'},
+                                {'6','.','.','1','9','5','.','.','.'},
+                                {'.','9','8','.','.','.','.','6','.'},
+                                {'8','.','.','.','6','.','.','.','3'},
+                                {'4','.','.','8','.','3','.','.','1'},
+                                {'7','.','.','.','2','.','.','.','6'},
+                                {'.','6','.','.','.','.','2','8','.'},
+                                {'.','.','.','4','1','9','.','.','5'},
+                                {'.','.','.','.','8','.','.','7','9'}};
     Solution sol;
-    int res = sol.searchInsert(nums, target);
-    cout << res << endl;
+    sol.solveSudoku(board);
+
+    for(auto a: board){
+        for(auto b: a)
+            cout << b << ' ';
+        cout << endl;
+    }
 
     return 0;
 }
