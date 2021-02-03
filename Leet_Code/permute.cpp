@@ -1,47 +1,56 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>
+
 using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> permute(vector<int>& nums) {
-        vector<vector<int>> ret;
-        vector<int> track;
-        backtrack(nums, track, ret);
-        return ret;
+    void swap(int &a, int &b) {
+        int tmp = a;
+        a = b;
+        b = tmp;
     }
 
-    void backtrack(vector<int>& nums, vector<int>& track, vector<vector<int>>& ret) {
-        if(track.size() == nums.size()){
-            ret.push_back(track);
+    void backtrack(vector<vector<int>> &res, vector<int> &arr, int pos, int len) {
+        if(arr.size() == len) {
+            res.push_back(arr);
             return;
         }
-        for(int i = 0; i < nums.size(); i++){
-            if(contains(track, nums[i]))
-                continue;
-            track.push_back(nums[i]);
-            int j = track.size() - 1;
-            backtrack(nums, track, ret);
-            track.erase(track.begin() + j);
+        for(int i = pos; i < len; i++) {
+            swap(vec[pos], vec[i]);
+            arr.push_back(vec[pos]);
+            backtrack(res, arr, pos+1, len);
+            arr.pop_back();
+            swap(vec[pos], vec[i]);
         }
-
     }
 
-    bool contains(vector<int>& nums, int num){
-        for(auto a = nums.begin(); a != nums.end(); a++)
-            if(*a == num)
-                return true;
-        return false;
+    vector<vector<int>> permute(vector<int> &nums) {
+        vec.assign(nums.begin(), nums.end());
+        vector<vector<int>> res;
+        vector<int> arr;
+        int N = (int)nums.size();
+        backtrack(res, arr, 0, N);
+        return res;
     }
+
+private:
+    // vec used to be a global array equal to nums
+    vector<int> vec;
 };
+
 
 int main()
 {
     vector<int> nums {1,2,3};
     Solution sol;
-    vector<vector<int>> ans = sol.permute(nums);
-
+    vector<vector<int>> res = sol.permute(nums);
+    for(auto r: res){
+        for(auto a: r)
+            cout << a << " ";
+        cout << endl;
+    }
+    cout << "Program Ending..." << endl;
     return 0;
 }
