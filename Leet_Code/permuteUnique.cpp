@@ -1,5 +1,5 @@
-#ifndef _SOLUTION_HPP
-#define _SOLUTION_HPP
+#ifndef _UNIQUE_HPP
+#define _UNIQUE_HPP
 
 #include <iostream>
 #include <string>
