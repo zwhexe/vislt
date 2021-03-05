@@ -4,46 +4,36 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <unordered_set>
+#include <unordered_map>
 #include <algorithm>
 using std::string;
 using std::vector;
-using std::unordered_set;
+using std::unordered_map;
+using std::sort;
+using std::swap;
 
 class Solution {
-private:
-    vector<vector<int>> res;
-    vector<int> tmp;
-    int N;
-
 public:
-    vector<vector<int>> permuteUnique(vector<int>& nums) {
-        N = nums.size();
-        backtrack(nums);
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        vector<vector<string>> res;
+        unordered_map<string, int> map;
+        string temp;
+        for(auto str: strs) {
+            temp = str;
+            sort(str.begin(), str.end());
+            if(map[str] == 0) {
+                int num = map.size();
+                map.insert({str, num+1});
+                vector<string> ans;
+                ans.push_back(temp);
+                res.push_back(ans);
+            }
+            else {
+                int num = map[str];
+                res[num].push_back(temp);
+            }
+        }
         return res;
-    }
-
-    void backtrack(vector<int> nums) {
-        if((int)tmp.size() == N) {
-            res.emplace_back(tmp);
-            return;
-        }
-        std::sort(nums.begin(), nums.end());
-        for(int i = 0; i < (int)nums.size(); i++) {
-            if(i > 0 && nums[i] == nums[i-1])
-                continue;
-            int num = nums[i];
-            // store num in tmp, and delete it from nums
-            tmp.emplace_back(nums[i]);
-            std::swap(nums[i], nums[nums.size() - 1]);
-            nums.pop_back();
-            // backtrack nums that has been processed
-            backtrack(nums);
-            // restore nums
-            nums.emplace_back(num);
-            std::swap(nums[i], nums[nums.size() - 1]);
-            tmp.pop_back();
-        }
     }
 };
 
