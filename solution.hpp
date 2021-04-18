@@ -11,28 +11,44 @@ using std::vector;
 using std::unordered_map;
 using std::sort;
 using std::swap;
+using std::find;
 
 class Solution {
+private:
+    int res;
+    int size;
+    vector<unordered_map<int, bool>> board;
+
 public:
-    vector<vector<string>> groupAnagrams(vector<string>& strs) {
-        vector<vector<string>> res;
-        unordered_map<string, int> map;
-        string temp;
-        for(auto str: strs) {
-            temp = str;
-            sort(str.begin(), str.end());
-            if(map[str] == 0) {
-                int num = map.size();
-                map.insert({str, num+1});
-                vector<string> ans;
-                ans.push_back(temp);
-                res.push_back(ans);
-            }
-            else {
-                int num = map[str];
-                res[num].push_back(temp);
-            }
+    void boardtrack(int row) {
+        if(row == size) {
+            res++;
+            return;
         }
+        // for loop cols usage
+        for(int i = 0; i < size; i++) {
+            if(board[row][i])
+                continue;
+            
+            boardtrack(row+1);
+
+        }
+    }
+
+    int totalNQueens(int n) {
+        if (n == 2 || n == 3)
+            return 0;
+        else if (n == 1) 
+            return 1;
+        else
+            this->size = n;
+        // unRow and unCol
+        res = 0;
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < size; j++)
+                board[i][j] = false; 
+        }
+        boardtrack(0);
         return res;
     }
 };
