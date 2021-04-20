@@ -15,41 +15,25 @@ using std::find;
 
 class Solution {
 private:
-    int res;
-    int size;
-    vector<unordered_map<int, bool>> board;
+    int res = 0;
 
 public:
-    void boardtrack(int row) {
-        if(row == size) {
-            res++;
-            return;
+    void dfs(int n, int row, int col, int ld, int rd) {
+        if (row >= n) {
+            res++; return; 
         }
-        // for loop cols usage
-        for(int i = 0; i < size; i++) {
-            if(board[row][i])
-                continue;
-            
-            boardtrack(row+1);
-
+        // set all availiable pos as 1
+        int bits = ~(col | ld | rd) & ((1 << n) - 1);   // 1
+        while (bits > 0) {   // 2
+            int pick = bits & -bits; // 3
+            dfs(n, row + 1, col | pick, (ld | pick) << 1, (rd | pick) >> 1); //4
+            bits &= bits - 1; // 5
         }
     }
 
     int totalNQueens(int n) {
-        if (n == 2 || n == 3)
-            return 0;
-        else if (n == 1) 
-            return 1;
-        else
-            this->size = n;
-        // unRow and unCol
-        res = 0;
-        for(int i = 0; i < size; i++) {
-            for(int j = 0; j < size; j++)
-                board[i][j] = false; 
-        }
-        boardtrack(0);
-        return res;
+        dfs(n, 0, 0, 0, 0);
+        return this->res;
     }
 };
 
