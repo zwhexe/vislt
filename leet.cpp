@@ -5,10 +5,18 @@ using namespace std;
 
 int main()
 {
-    vector<int> nums = {2,3,1,1,4};
+    vector<vector<int>> nums;
+    nums.push_back({1,3});
+    nums.push_back({2,6});
+    nums.push_back({8,12});
+    nums.push_back({15,18});
     Solution sol;
-    bool res = sol.canJump(nums);
-    cout << res << endl;
+    vector<vector<int>> res = sol.merge(nums);
+    for(auto r: res) {
+        for(auto a: r)
+            cout << a << " ";
+        cout << endl;
+    }
 
     cout << "-----Program Ending-----" << endl;
     return 0;

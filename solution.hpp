@@ -14,8 +14,9 @@ using std::swap;
 
 class Solution {
 public:
-    bool canJump(vector<int>& nums) {
-        
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+
+        return intervals;
     }
 };
 
